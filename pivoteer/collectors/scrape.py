@@ -310,7 +310,7 @@ class InternetIdentityScraper(MechanizedScraper):
 
         try:
             session = ExternalSessions.objects.get(service=self.service)
-            cookie = requests.utils.cookiejar_from_dict(json.loads(session.cookie))
+            cookie = requests.utils.cookiejar_from_dict(session.cookie)
 
             self.browser.session.cookies = cookie
             valid_cookie = self.check_cookie()
