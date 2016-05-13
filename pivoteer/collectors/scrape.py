@@ -363,7 +363,9 @@ class InternetIdentityScraper(MechanizedScraper):
     def scrape_data(self, indicator, query_type):
 
         passive_table = []
-        search_period = '6'
+        
+        #search period 7 is "complete history"
+        search_period = '7'
 
         # 0 = Current Day
         # 1 = Past 72 Hours
