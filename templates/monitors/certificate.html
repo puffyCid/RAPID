@@ -1,0 +1,104 @@
+{% load widget_tweaks %}
+{% load monitor_extras %}
+
+
+{% if monitored_certificates %}
+    <form class="form" role="form" action="" method="post">
+
+        {% csrf_token %}
+        <table id="certificate_table" class="table display" data-count={{ monitored_certificates.count }}>
+            <thead><tr>
+                <th>Certificate Value</th>
+                <th>Hosts</th>
+                <th>Next Lookup</th>
+                <th>Tagging</th>
+                <th></th> <!-- Empty column for selection checkbox -->
+            </tr></thead>
+
+            <tbody>
+            {% for monitor in monitored_certificates %}
+                <tr>
+                    <td>{{ monitor.certificate_value }}</td>
+                    <td>
+                        <!-- If there are more than 5 hosts (IPs), we collapse it -->
+                        {% if monitor.resolutions.items|length > 5 %}
+                            {% with collapse_id=monitor.certificate_value|digest %}
+                                <button type="button"
+                                        class="btn btn-link btn-xs"
+                                        data-toggle="collapse"
+                                        data-target="#{{ collapse_id }}"
+                                        aria-expanded="true"
+                                        aria-controls="{{ collapse_id }}">
+                                    {{ monitor.resolutions|length }} IP addresses
+                                </button>
+                                <div id="{{ collapse_id }}" class="collapse">
+                                    <table id="certificate_host_table"
+                                           class="table display"
+                                           data-count={{ monitor.resolutions|length }}>
+                                        {% for ip, resolution in monitor.resolutions.items %}
+                                            <tr>
+                                                <td>{{ ip }}</td>
+                                                <td>{{ resolution.geo_location.country }}</td>
+                                                <td>
+                                                    {% if resolution.domain|length == 0 %}
+                                                        (No Domains)
+                                                    {% elif resolution.domain|length > 5 %}
+                                                        {% with collapse_id2=monitor.certificate_value|add:ip|digest %}
+                                                            <button type="button"
+                                                                    class="btn btn-link btn-xs"
+                                                                    data-toggle="collapse"
+                                                                    data-target="#{{ collapse_id }}"
+                                                                    aria-expanded="true"
+                                                                    aria-controls="{{ collapse_id }}">
+                                                                {{ resolution.domain|length }} Domains
+                                                            </button>
+                                                            {{ resolution.domain|safeseq|join:", " }}
+                                                            <div id="{{ collapse_id2 }}" class="collapse">
+                                                            </div>
+                                                        {% endwith %}
+                                                    {% else %}
+                                                        {{ resolution.domain|safeseq|join:", " }}
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            {% endwith %}
+                        {%  else %}
+                            <table id="certificate_host_table"
+                                   class="table display"
+                                   data-count={{ monitor.resolutions|length }}>
+                            {% for ip, resolution in monitor.resolutions.items %}
+                                <tr>
+                                    <td>{{ ip }}</td>
+                                    <td>{{ resolution.geo_location.country }}</td>
+                                    <td>
+                                        {% if resolution.domain|length == 0 %}
+                                            (No Domains)
+                                        {% else %}
+                                            {{ resolution.domain|safeseq|join:", " }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </table>
+                        {% endif %}
+                    </td>
+                    <td>{{ monitor.next_lookup }}</td>
+                    <td>
+                        {% for tagging in monitor.tags.all %}
+                            <span class="glyphicon glyphicon-tag" aria-hidden="true"></span>
+                            {{ tagging.tag }} <br>
+                        {% endfor %}
+                    </td>
+                    <td><input type="checkbox" value="{{ monitor.certificate_value }}" name="choices"></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </form>
+{% else %}
+    <br>
+    There are no certificates currently being monitored
+{% endif %}

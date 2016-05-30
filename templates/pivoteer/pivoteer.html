@@ -48,21 +48,42 @@
       <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active">
             <a href="#RecentPanel" aria-controls="LookupPanel" role="tab" data-toggle="tab">
-                Recent Activity
+                Recent
                 <span class="glyphicon" aria-hidden="true"></span>
             </a>
         </li>
 
         <li role="presentation">
             <a href="#HistoricalPanel" aria-controls="HostingPanel" role="tab" data-toggle="tab">
-                Historical Activity
+                Historical
                 <span class="glyphicon" aria-hidden="true"></span>
             </a>
         </li>
 
         <li role="presentation">
             <a href="#MalwarePanel" aria-controls="MalwarePanel" role="tab" data-toggle="tab">
-                Malware Activity
+                Malware
+                <span class="glyphicon" aria-hidden="true"></span>
+            </a>
+        </li>
+
+        <li role="presentation">
+           <a href="#SafeBrowsingPanel" aria-controls="SafeBrowsingPanel" role="tab" data-toggle="tab">
+            SafeBrowsing
+            <span class="glyphicon" aria-hidden="true"></span>
+            </a>
+        </li>
+
+        <li role = "presentation">
+            <a href ="#SearchPanel" aria-controls="SearchPanel" role="tab" data-toggle="tab">
+                Search Results
+                <span class="glyphicon" aria-hidden="true"></span>
+            </a>
+        </li>
+
+        <li role = "presentation">
+            <a href ="#ExternalPanel" aria-controls="ExternalPanel" role="tab" data-toggle="tab">
+                External
                 <span class="glyphicon" aria-hidden="true"></span>
             </a>
         </li>
@@ -78,6 +99,8 @@
                 <li><a href="{% url 'Pivoteer_Export' %}?filter=recent">Recent Records</a></li>
                 <li><a href="{% url 'Pivoteer_Export' %}?filter=historical">Historical Records</a></li>
                 <li><a href="{% url 'Pivoteer_Export' %}?filter=malware">Malware Records</a></li>
+                <li><a href="{% url 'Pivoteer_Export' %}?filter=search">Search Records</a></li>
+                <li><a href="{% url 'Pivoteer_Export' %}?filter=safebrowsing">SafeBrowsing Records</a></li>
               </ul>
             </div>
         </li>
@@ -102,6 +125,9 @@
         <div role="tabpanel" class="tab-pane active" id="RecentPanel"></div>
         <div role="tabpanel" class="tab-pane" id="HistoricalPanel"></div>
         <div role="tabpanel" class="tab-pane" id="MalwarePanel"></div>
+        <div role="tabpanel" class="tab-pane" id="SafeBrowsingPanel"></div>
+        <div role="tabpanel" class="tab-pane" id="SearchPanel"></div>
+        <div role="tabpanel" class="tab-pane" id="ExternalPanel"></div>
       </div>
     <!-- End tab panes -->
 {% endblock content %}

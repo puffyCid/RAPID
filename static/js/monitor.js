@@ -1,7 +1,9 @@
+var certificate_panel = $("#CertificatePanel");
 var domain_panel = $("#DomainPanel");
 var ip_panel = $("#IpPanel");
 var alert_panel = $("#AlertPanel");
 
+var certificate_url = "/monitors/view_certificates";
 var domain_url = "/monitors/view_domains";
 var ip_url = "/monitors/view_ips";
 var alert_url = "/monitors/view_alerts";
@@ -49,6 +51,7 @@ function get_active_panel_choices() {
 
 
 $(document).ready(function(){
+   load_panel(certificate_panel, certificate_url); 
    load_panel(domain_panel, domain_url);
    load_panel(ip_panel, ip_url);
    load_panel(alert_panel, alert_url);
@@ -144,6 +147,15 @@ $(document).on( "click", "button[data-toggle=modal]", function() {
 
     $(target).find(".modal-body").load(link, function() {
         $(target).find('.selectpicker').selectpicker();
+    });
+});
+
+$(document).on( "click", "a[data-toggle=modal]", function() {
+    // Grab reference to link within event context
+    var link = $(this).attr("data-link");
+    var target = $(this).attr("data-target");
+    $(target).find(".modal-body").load(link, function() {
+        console.log("I don't think we need to do anything here. It's a callback once loading is complete.");
     });
 });
 // End modal functions and events //

@@ -45,33 +45,39 @@ def check_email_valid(submission):
 
 def check_domain_valid(submission):
     """
-    Check if submission is a valid domain
-    """
-    ext = tldextract.extract(submission)
-    tld = ext.tld
-    domain = ext.domain
+    Check if a submission is a valid domain.
 
-    if tld and domain:
-        return True
-    else:
-        return False
+    :param submission: The submission to be checked
+    :return: True if 'submission' is a valid domain, otherwise False
+    """
+    return re.match("^([A-Za-z0-9-]+(?:\\.[A-Za-z0-9-]+)*(?:\\.[A-Za-z]{2,}))$", submission) is not None
 
 
 def discover_type(submission):
-    """
-    Figure out type of indicator a submission is
+    """Figure out type of indicator a submission is
+    
+    Valid types are:
+        ip: If the string matches an ipv4 string (i.e. '1.2.3.4')
+        domain: If the string matches a valid domain name (i.e. 'www.domain.com')
+        other: Any string that does not match one of the others.
+    
+    Args:
+        submission (str): The indicator to check the type against
+    
+    Returns (str): The indicator type: 'ip', 'domain', or 'other'
+    
     """
     if check_ip_valid(submission):
         return "ip"
 
-    elif check_email_valid(submission):
-        return "email"
+    #elif check_email_valid(submission):
+    #    return "email"
 
     elif check_domain_valid(submission):
         return "domain"
 
     else:
-        return None
+        return "other"
 
 
 def get_base_domain(submission):
@@ -85,3 +91,23 @@ def get_base_domain(submission):
         return domain_name
 
     return None
+
+def scrape_attribute(search_dict, field):
+    fields_found = []
+    if isinstance(search_dict, dict):
+        for k, v in search_dict.items():
+            if k == field:
+                fields_found.append(v)
+            elif isinstance(v, dict):
+                results = scrape_attribute(v, field)
+                for result in results:
+                    fields_found.append(result)
+            elif isinstance(v, list):
+                for item in v:
+                    if isinstance(item, dict):
+                        more_results = scrape_attribute(item, field)
+                        for another_result in more_results:
+                            fields_found.append(another_result)
+    return fields_found
+
+

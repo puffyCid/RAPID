@@ -11,7 +11,7 @@ function kill_ajax() {
 // Submit for all records
 function run_records(form_data) {
 
-    var records = [ "Recent", "Historical", "Malware"];
+    var records = [ "Recent", "Historical", "Malware", "SafeBrowsing", "Search", "External" ];
 
     $.each(records, function( index, record ) {
         // Clear out old information from DOM elements and submit new ajax requests
@@ -127,8 +127,20 @@ function initialize_table(record_element) {
             "info":            false,
             "bLengthChange":   false
         });
-
-    }
+    } else if (record_element == "#SafeBrowsingPanel") {
+        $('#SS_table').dataTable({
+            "iDisplayLength": 50,
+            "info": false,
+            "bLengthChange": false
+        });
+    } else if (record_element == "#SearchPanel") {
+        $('#SR_table').dataTable({
+            "iDisplayLength":  50,
+            "info":            false,
+            "bLengthChange":   false,
+            "bSort":           false
+        })
+    } 
 }
 
 
@@ -209,6 +221,7 @@ $("#export").on( "click", "a", function(event) {
     var link = $(this);
     var linkURL = link.attr("href");
     var current_pivot = $("#pivot_navigator").find("li").last().find("span").text();
-    var fullURL = linkURL + "?indicator=" + current_pivot;
+    var connector = -1 === linkURL.indexOf("?") ? "?" : "&";
+    var fullURL = linkURL + connector + "indicator=" + current_pivot;
     window.open(fullURL);
 });

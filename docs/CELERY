@@ -1,45 +1,24 @@
-*** Be aware that the shell script and configuration file names MUST match or else
-the shell script will default and not use the custom configuration file settings,
-make sure you remove the .sh extension on the shell script ***
-
 Shell Scripts:
-  celery_beat.sh
-  celery_daemon.sh
-  celery_pivoteer.sh
+  /external_configs/celery/celery_beat.sh (copied to /etc/init.d/celery_beat via install.sh)
+  /external_configs/celery/celery_daemon.sh (copied to /etc/init.d/celery_daemon via install.sh)
+  /external_configs/celery/celery_pivoteer.sh (copied to /etc/init.d/celery_pivoteer via install.sh)
 
 Configuration Files:
-  celery_beat
-  celery_daemon
-  celery_pivoteer
+  /external_configs/celery/celery_beat (copied to /etc/default/celery_beat via install.sh)
+  /external_configs/celery/celery_daemon (copied to /etc/default/celery_daemon via install.sh)
+  /external_configs/celery/celery_pivoteer (copied to /etc/default/celery_pivoteer via install.sh)
 
+Run the service scripts to control celery daemons:
 
-Instructions:
-  1) Copy shell scripts to "/etc/init.d/"
-       -- Don't forget to remove .sh extension
-
-  2) Change configuration file settings to reflect your environment
-       -- CELERY_BIN="/usr/local/bin/celery" <-- Path to 'celery' command
-       -- CELERYD_CHDIR="/vagrant/" <-- Path to Django application
-
-  3) Copy updated configuration files to "/etc/default/"
-       -- Make sure the name matches the corresponding shell script
-
-  4) Add new user 'celery' in group 'celery'
-       -- sudo groupadd celery
-       -- sudo useradd -g celery celery
-
-  5) Ensure the configuration files are owned by root
-       -- sudo chown root:root /etc/default/celery_beat
-       -- sudo chown root:root /etc/default/celery_daemon
-       -- sudo chown root:root /etc/default/celery_pivoteer
-
-  6) Run the shell scripts to begin celery daemons
-       -- sudo sh /etc/init.d/celery_beat start
-       -- sudo sh /etc/init.d/celery_daemon start
-       -- sudo sh /etc/init.d/celery_pivoteer start
-
+```
+service celery_beat {start|status|stop}
+service celery_daemon {start|status|stop}
+service celery_pivoteer {start|status|stop}
+```
 
 *** Alternatively, you can manually start celery via the command-line. This is NOT
 recommended for production but can be useful for debugging and testing purposes ***
 
-  celery multi start 4 -l INFO -Q:1-3 pivoteer -Q default
+```
+celery multi start 4 -l INFO -Q:1-3 pivoteer -Q default
+```

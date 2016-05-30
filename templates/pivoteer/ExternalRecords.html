@@ -1,0 +1,15 @@
+<h3>External Resources</h3>
+<br><b>indicator: </b>{{ indicator }}
+<br><b>type: </b>{{ type }}
+{% if type == 'ip' %}
+<hr class="linebreak">
+<h5>BGP Toolkit</h5>
+<a href="http://bgp.he.net/ip/{{ indicator }}" target="_blank">http://bgp.he.net/ip/{{ indicator }} <span class="glyphicon glyphicon-new-window"></span></a>
+{% endif %}
+<hr class="linebreak">
+<h5>Hybrid Analysis</h5>
+<a href="https://www.hybrid-analysis.com/search?query={{ indicator }}" target="_blank">https://www.hybrid-analysis.com/search?query={{ indicator }} <span class="glyphicon glyphicon-new-window"></span></a>
+
+<hr class="linebreak">
+<h5>urlQuery</h5>
+<a href="http://urlquery.net/search.php?type=string&max=50&q={{ indicator }}" target="_blank">http://urlquery.net/search.php?type=string&max=50&q={{ indicator }} <span class="glyphicon glyphicon-new-window"></span></a>

@@ -1,0 +1,11 @@
+core/GeoLite2-City.mmdb.gz
+.pydevproject
+.project
+.vagrant/
+static/
+.idea/
+*.iml
+**/__pycache__/
+RAPID.log
+secrets.json
+core/GeoLite2-City.mmdb

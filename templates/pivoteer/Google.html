@@ -1,0 +1,19 @@
+<h3>Google SafeBrowsing</h3>
+<a target="_blank" href="{{ google_url }}">View current report on Google's site.</a>
+<table id="SB_table" class="table display">
+    <thead>
+    <tr>
+        <th>Submission Date</th>
+        <th>SafeBrowsing API Response</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for record in records %}
+        <tr>
+            <th>{{ record.info_date|date:"N d, Y h:i A" }}</th>
+            <th>{{ record.info.body }}</th>
+        </tr>
+    {%  endfor %}
+
+    </tbody>
+</table>

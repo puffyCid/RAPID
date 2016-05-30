@@ -310,7 +310,7 @@ class InternetIdentityScraper(MechanizedScraper):
 
         try:
             session = ExternalSessions.objects.get(service=self.service)
-            cookie = requests.utils.cookiejar_from_dict(json.loads(session.cookie))
+            cookie = requests.utils.cookiejar_from_dict(session.cookie)
 
             self.browser.session.cookies = cookie
             valid_cookie = self.check_cookie()
@@ -363,7 +363,9 @@ class InternetIdentityScraper(MechanizedScraper):
     def scrape_data(self, indicator, query_type):
 
         passive_table = []
-        search_period = '6'
+        
+        #search period 7 is "complete history"
+        search_period = '7'
 
         # 0 = Current Day
         # 1 = Past 72 Hours

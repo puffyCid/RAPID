@@ -1,0 +1,13 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<form action="{% url 'add_certificate' %}" method="post">
+    {% csrf_token %}
+    <h4><label>New certificate submission</label></h4>
+    {{ form.fragment|attr:"class:form-control"|attr:"placeholder:Enter Certificate" }}<br>
+    {{ form.hosts|attr:"class:form-control"|attr:"placeholder:Enter Host(s)" }}<br>
+    <div align="center">
+        <input class="btn btn-primary" type="submit" value="Confirm Monitor Submission"/>
+    </div>
+
+</form>

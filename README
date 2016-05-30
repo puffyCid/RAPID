@@ -41,18 +41,55 @@ General Instructions
        "EMAIL_PORT": "<EMAIL_PORT>",
        "IID_USER": "<INTERNET_IDENTITY_USERNAME>",
        "IID_PASS": "<INTERNET_IDENTITY_PASSWORD>",
-       "PASSIVE_TOTAL_API": "<PASSIVE_TOTAL_API_KEY>"
+       "PASSIVE_TOTAL_API": "<PASSIVE_TOTAL_API_KEY>",
+       "CENSYS_API_ID": "<CENSYS_API_ID>",
+       "CENSYS_API_SECRET": "<CENSYS_API_SECRET>",
+       "GOOGLE_SAFEBROWSING_API_KEY": "<GOOGLE_SAFEBROWSING_API_KEY>",
+       "GOOGLE_SAFEBROWSING_API_CLIENT": "<GOOGLE_SAFEBROWSING_API_CLIENT>",
+       "TOTAL_HASH_API_ID": "<TOTAL_HASH_API_ID>",
+       "TOTAL_HASH_SECRET": "<TOTAL_HASH_SECRET>",
+       "MALWR_LOGIN_ID": "<MALWR_LOGIN_USERNAME>",
+       "MALWR_LOGIN_SECRET": "<MALWR_LOGIN_PASSWD>"
      }
 
 6) Instantiate and sync your Django models
-     -- python3 manage.py syncdb
+     -- For NEW installations:
+            python3 manage.py syncdb
+     -- For EXISTING installations:
+            python3 manage.py migrate --fake-initial
+            python3 manage.py migrate
 
-7) Setup celery worker daemons
-     -- Scripts located at: /external_configs/celery/
-     -- Instructions located at: /docs/CELERY
+7) Start celery worker daemons
+     -- service celery_beat start
+     -- service celery_daemon start
+     -- service celery_pivoteer start
+     -- Additional info located at: /docs/CELERY
 
-8) Retrieve and decompress Geo Lite database file and place in /RAPID/core/
-     -- wget "http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz"
-     -- gunzip GeoLite2-City.mmdb.gz
+8) If you figured out the correct apache configs, run `python3 manage.py collectstatic`
+Otherwise, to run the django server in local dev mode, run `python3 manage.py runserver`
+in order to run locally, update manage.py and RAPID/celery.py:
 
-9) Run python3 manage.py collectstatic
+    -- change 'os.environ.setdefault("DJANGO_SETTINGS_MODULE", "RAPID.settings.production")' to
+        'os.environ.setdefault("DJANGO_SETTINGS_MODULE", "RAPID.settings.local")'
+
+Automated Testing
+
+The tests are split into two folders - 'integration_tests' and 'unit_tests'. Integration tests are time consuming
+because they make API calls. Running them frequently may not be a good idea since they will use up API credits.
+
+Unit tests, on the other hand, may be run frequently and are fast. They do not hit APIs.
+
+You can specify which tests to run by specifying the folder of the tests you wish to execute. Unit and integration
+tests are placed in separate folders, for this reason.
+
+Running the tests will create and destroy a temporary Postgres database during each run. You will need to ensure
+Postgres is configured correctly with the user account in secrets.json, but you won't need a database in place.
+
+1) Run all tests: From the project root directory (for example, /vagrant on Vagrant) run:
+`python3 manage.py test`
+
+2) To run only unit tests:
+`python3 manage.py test unit_tests`
+
+3) To run only integration tests:
+`python3 manage.py test integration_tests`

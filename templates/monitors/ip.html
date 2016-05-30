@@ -25,10 +25,14 @@
 
                         {% if monitor.last_hosts|length > 10 %}
                             {% with collapse_id=monitor.ip_address|digest %}
-                                <button type="button" class="btn btn-link btn-xs" data-toggle="collapse" data-target="#{{ collapse_id }}" aria-expanded="true" aria-controls="{{ collapse_id }}">
-                                    {{ monitor.last_hosts|length }} IP addresses
+                                <button type="button"
+                                        class="btn btn-link btn-xs"
+                                        data-toggle="collapse"
+                                        data-target="#{{ collapse_id }}"
+                                        aria-expanded="true"
+                                        aria-controls="{{ collapse_id }}">
+                                    {{ monitor.last_hosts|length }} Domains
                                 </button>
-
                                 <div id="{{ collapse_id }}" class="collapse">
                                     {% for host in monitor.last_hosts %}
                                         {{ host }}<br>

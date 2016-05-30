@@ -8,6 +8,7 @@
             <th>Resolution Date</th>
             <th>Domain</th>
             <th>IP Address</th>
+            <th>Country</th>
             <th>Source</th>
           </tr>
         </thead>
@@ -15,7 +16,7 @@
         <tbody>
             {% for record in hosting_records %}
                 <tr>
-                    <td>{{ record.info_date }}</td>
+                    <td>{{ record.info_date|date:"N d, Y"  }}</td>
                     <td>
                         {% if record.info.domain != origin %}
                             <span class="pivot">{{ record.info.domain }}</span>
@@ -30,6 +31,9 @@
                             {{ record.info.ip }}
                         {% endif %}
                     </td>
+                <td>
+                    {{ record.location.country }}
+                </td>
                     <td>{{ record.get_info_source_display }}</td>
                 </tr>
             {% endfor %}
@@ -97,13 +101,13 @@
                         <td>{{ record.earliest }}</td>
                         <td>{{ record.latest }}</td>
                         <td>
-                            <b>Lookup Date:</b> {{ record.info_date }}<br>
+                            <b>Lookup Date:</b> {{ record.info_date|date:"N d, Y" }}<br>
                             <b>IP Address:</b> {{ record.info.query }}<br>
                             <b>ASN CIDR:</b> {{ record.info.asn_cidr }}<br>
                             <b>ASN ID:</b> {{ record.info.asn }}<br>
                             <b>ASN Registry:</b> {{ record.info.asn_registry }}<br>
                             <b>ASN Country Code:</b> {{ record.info.asn_country_code }}<br>
-                            <b>ASN Date:</b> {{ record.info.asn_date }}<br>
+                            <b>ASN Date:</b> {{ record.info.asn_date|date:"N d, Y" }}<br>
                             <b>Referral:</b> {{ record.info.referral }}<br>
 
                             {% for net in record.info.nets %}

@@ -1,5 +1,10 @@
 {% load pivoteer_extras %}
 
+<span id="top"></span>
+Jump to: 
+<br><a href="#whois">whois</a>
+<br><a href="#threatcrowd">threatcrowd</a>
+<br><a href="#certificates">certificate search</a>
 <h3>Hosting Within Last 24 Hours</h3>
 {% if current_hosts %}
     <table id="CR_table" class="table display">
@@ -9,12 +14,13 @@
             <th>Domain</th>
             <th>IP Address</th>
             <th>Source</th>
+            <th>SSL</th>
           </tr>
         </thead>
         <tbody>
             {% for record in current_hosts %}
                 <tr>
-                    <td>{{ record.info_date }}</td>
+                    <td>{{ record.info_date|date:"N d, Y" }}</td>
                     <td>
                         {% if record.info.domain != origin %}
                             <span class="pivot">{{ record.info.domain }}</span>
@@ -25,11 +31,31 @@
                     <td>
                         {% if record.info.ip != origin %}
                             <span class="pivot">{{ record.info.ip }}</span>
+                            <br>
+                            {{ record.location.country }}
                         {% else %}
                             {{ record.info.ip }}
+                            <br>
+                            {{ record.location.country }}
                         {% endif %}
                     </td>
                     <td>{{ record.get_info_source_display }}</td>
+                    <td>
+
+                        {% if 'status' in record.info.https_cert %}
+                            {{ record.info.https_cert.message }}
+                        {% else %}
+                            Subject: {{ record.info.https_cert.subject_dn }}<br />
+                            Issuer: {{ record.info.https_cert.issuer_dn }}<br />
+                            SHA-256:
+                            <a target="_blank" href="https://www.censys.io/ipv4?q={{ record.info.https_cert.fingerprint_sha256 }}">
+                                {{ record.info.https_cert.fingerprint_sha256 }}
+                                <span class="glyphicon glyphicon-new-window"></span>
+                            </a><br />
+                            Validity: {{ record.info.https_cert.validity }}<br />
+                            Alt. Names: {{ record.info.https_cert.extensions.subject_alt_name.dns_names }}
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
@@ -38,7 +64,8 @@
     <h4>No Records Found</h4>
 {% endif %}
 
-<h3>Most Recent WHOIS Record</h3>
+<h3 id="whois">Most Recent WHOIS Record</h3>
+<a href="#top">Back to top</a><br><br>
 {% if current_whois %}
     <table id="CW_table" class="table display">
         <thead>
@@ -111,4 +138,111 @@
     </table>
 {% else %}
     <h4>No Records Found</h4>
+{% endif %}
+
+<hr class="linebreak" id="threatcrowd">
+<h3>Most Recent ThreatCrowd Record</h3>
+<a href="#top">Back to top</a><br><br>
+{% if tc_info %}
+  <b>Lookup Date:</b><br>
+  {{ tc_info.info_date }}
+  <br><br>
+  {% if tc_info.info.error %}
+  Error retrieving TC data: {{ tc_info.info.error }}
+  {% endif %}
+  {% if tc_info.info.permalink %}
+  <b>Permalink:</b><br>
+  <a target="_blank" href="{{ tc_info.info.permalink }}">{{ tc_info.info.permalink }}</a>
+  <br><br>
+  {% endif %}
+  {% if tc_info.info.emails %}
+  <b>Emails:</b><br>
+  {{ tc_info.info.emails|join:", " }}
+  <br><br>
+  {% endif %}
+  <table class="table display">
+  <thead>
+    <tr>
+      {% if tc_info.info.subdomains %}<th>Subdomains</th>{% endif %}
+      {% if tc_info.info.resolutions %}
+      <th>Resolutions</th>
+      {% endif %}
+      {% if tc_info.info.hashes %}<th>Hashes</th>{% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      {% if tc_info.info.subdomains %}
+      <td>
+      {% for item in tc_info.info.subdomains %}
+        <br><span class="pivot">{{ item }}</span>
+      {% endfor %}
+      </td>
+      {% endif %}
+      {% if tc_info.info.resolutions %}
+      <td>
+      {% for item in tc_info.info.resolutions %}
+        <br>{{item.last_resolved}} {% if item.domain %}<span class="pivot">{{ item.domain }}</span>{% endif %}{% if item.ip_address %}<span class="pivot">{{ item.ip_address }}</span>{% endif %}       
+      {% endfor %}
+      </td>
+      {% endif %}
+      {% if tc_info.info.hashes %}
+      <td>
+      {% for item in tc_info.info.hashes %}
+        <br>{{ item }}
+      {% endfor %}
+      </td>
+      {% endif %}
+    </tr>
+  </tbody>
+  </table>
+  {% if tc_info.info.references %}
+  <b>References:</b><br>
+  {{ tc_info.info.references|join:", " }}
+  <br><br>
+  {% endif %}
+{% else %}
+<h4>No Records Found</h4>
+{% endif %}
+
+<hr class="linebreak" id="certificates">
+<h3>Most Recent Certificate Search Results</h3>
+<a href="#top">Back to top</a><br><br>
+{% if cert_info %}
+  {% if cert_info.info.status %}
+    Error retrieving certificate data: {{ cert_info.info.message }}
+  {% elif cert_info.info.count > 0 %}
+    <br><b>Total results: </b>{{ cert_info.info.total }}
+    <b> Saved: </b>{{ cert_info.info.count }}
+  {% else %}
+    No results.
+  {% endif %}
+<br><br><b>Permalink: </b><a target="_blank" href="https://www.censys.io/certificates?q={{ cert_info.info.indicator }}">https://www.censys.io/certificates?q={{ cert_info.info.indicator }}</a>
+<br>
+<table id="cert_table" class="table display">
+  <tbody>
+    {% for item in cert_info.info.records %}
+    <tr>
+      <td>
+		Subject: {{ item.parsed.subject_dn }}<br />
+		Issuer: {{ item.parsed.issuer_dn }}<br />
+		SHA-256:
+		<a target="_blank" href="https://www.censys.io/certificates/{{ item.parsed.fingerprint_sha256 }}">
+		    {{ item.parsed.fingerprint_sha256 }}
+		    <span class="glyphicon glyphicon-new-window"></span>
+		</a>
+		<a target="_blank" href="https://www.censys.io/ipv4?q={{ item.parsed.fingerprint_sha256 }}"> ipv4 search
+		<span class="glyphicon glyphicon-new-window"></span></a>
+		<a target="_blank" href="https://www.censys.io/domain/help?q={{ item.parsed.fingerprint_sha256 }}"> domain search
+		<span class="glyphicon glyphicon-new-window"></span></a>
+		<br />
+		Validity: {{ item.parsed.validity.start }} - {{ item.parsed.validity.end }}<br />      
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<a href="#top">Back to top</a><br><br>
+{% else %}
+No certificate results loaded.
 {% endif %}

@@ -35,6 +35,8 @@ app.conf.update(
     #CELERY_TASK_SERIALIZER='json',
     #CELERY_RESULT_SERIALIZER='json',
     #CELERY_TIMEZONE='UTC',
+    # CELERY_ALWAYS_EAGER=True,
+    # TEST_RUNNER = 'djcelery.contrib.test_runner.CeleryTestSuiteRunner',
 )
 
 

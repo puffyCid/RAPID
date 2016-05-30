@@ -1,0 +1,25 @@
+<h3>Search Results</h3>
+{% if search_records %}
+    <table id="SR_table" class="table display">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>URL</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in search_records %}
+                {% for result in record.info.results %}
+                    <tr>
+                        <td>{{ result.title }}</td>
+                        <td><a href="{{ result.url }}">{{ result.url }}</a></td>
+                        <td>{{ result.content }}</td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <h4>No Records Found</h4>
+{% endif %}
