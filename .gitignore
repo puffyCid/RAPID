@@ -9,3 +9,5 @@ static/
 RAPID.log
 secrets.json
 core/GeoLite2-City.mmdb
+/rapid_SSL.crt
+/rapid_SSL.key
